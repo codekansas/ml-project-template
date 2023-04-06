@@ -1,0 +1,8 @@
+# requirements-dev.txt
+
+black
+cmake
+darglint
+mypy
+pytest
+ruff
