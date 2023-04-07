@@ -9,7 +9,7 @@ from torch import Tensor
 from torch.distributions.normal import Normal
 from torch.nn import functional as F
 
-from project.models.a2c import SimpleA2CModel
+from project.models.a2c import A2CModel
 from project.tasks.rl_demo_env import BipedalWalkerEnvironment, BWAction, BWState
 
 
@@ -33,7 +33,7 @@ Loss = dict[str, Tensor]
 class RLDemoTask(
     ml.ReinforcementLearningTask[
         RLDemoTaskConfig,
-        SimpleA2CModel,
+        A2CModel,
         BWState,
         BWAction,
         Output,
@@ -43,7 +43,7 @@ class RLDemoTask(
     def __init__(self, config: RLDemoTaskConfig):
         super().__init__(config)
 
-    def get_actions(self, model: SimpleA2CModel, states: list[BWState], optimal: bool) -> list[BWAction]:
+    def get_actions(self, model: A2CModel, states: list[BWState], optimal: bool) -> list[BWAction]:
         collated_states = self._device.recursive_apply(self.collate_fn(states))
         value = model.forward_value_net(collated_states.observation).cpu()
         p_dist = model.forward_policy_net(collated_states.observation)
@@ -93,7 +93,7 @@ class RLDemoTask(
         self.logger.log_scalar("reward_std", reward_arr.std())
         return trajectories
 
-    def run_model(self, model: SimpleA2CModel, batch: tuple[BWState, BWAction], state: ml.State) -> Output:
+    def run_model(self, model: A2CModel, batch: tuple[BWState, BWAction], state: ml.State) -> Output:
         states, _ = batch
         obs = states.observation
         value = model.forward_value_net(obs)
@@ -102,7 +102,7 @@ class RLDemoTask(
 
     def compute_loss(
         self,
-        model: SimpleA2CModel,
+        model: A2CModel,
         batch: tuple[BWState, BWAction],
         state: ml.State,
         output: Output,

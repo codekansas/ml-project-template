@@ -9,7 +9,7 @@ from torch.nn import functional as F
 
 
 @dataclass
-class SimpleA2CModelConfig(ml.BaseModelConfig):
+class A2CModelConfig(ml.BaseModelConfig):
     state_dims: int = ml.conf_field(MISSING, help="The number of state dimensions")
     action_dims: int = ml.conf_field(MISSING, help="The number of action dimensions")
     hidden_dims: int = ml.conf_field(MISSING, help="The number of hidden dimensions")
@@ -67,11 +67,11 @@ class FeedForwardNet(nn.Module):
         return x
 
 
-@ml.register_model("a2c", SimpleA2CModelConfig)
-class SimpleA2CModel(ml.BaseModel[SimpleA2CModelConfig]):
+@ml.register_model("a2c", A2CModelConfig)
+class A2CModel(ml.BaseModel[A2CModelConfig]):
     fixed_std: Tensor | None
 
-    def __init__(self, config: SimpleA2CModelConfig) -> None:
+    def __init__(self, config: A2CModelConfig) -> None:
         super().__init__(config)
 
         self.policy_net = FeedForwardNet(
