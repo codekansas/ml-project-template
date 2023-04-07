@@ -2,6 +2,8 @@
 
 This is a starter template for machine learning projects in PyTorch.
 
+The core of this library lives over [here](https://github.com/codekansas/ml-starter).
+
 ## Run a command
 
 Train a ResNet18 model on CIFAR10:

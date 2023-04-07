@@ -229,7 +229,7 @@ setup(
     version="0.0.1",
     description="Template repository for ML projects",
     author="Benjamin Bolte",
-    url="https://github.com/codekansas/ml-starter-cpp",
+    url="https://github.com/codekansas/ml-project-template",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.10",
