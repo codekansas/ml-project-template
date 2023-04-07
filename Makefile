@@ -59,6 +59,11 @@ format:
 	ruff --fix $(py-files)
 .PHONY: format
 
+format-cpp:
+	clang-format -i $$(git ls-files '*.cpp' '*.h')
+	cmake-format -i $$(git ls-files 'CMakeLists.txt' '*.cmake')
+.PHONY: format-cpp
+
 static-checks:
 	black --diff --check $(py-files)
 	ruff $(py-files)

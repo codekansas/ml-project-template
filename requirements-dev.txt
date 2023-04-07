@@ -6,3 +6,5 @@ darglint
 mypy
 pytest
 ruff
+clang-format
+cmake-format
