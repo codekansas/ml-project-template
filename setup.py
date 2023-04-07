@@ -19,7 +19,7 @@ setup(
     version="0.0.1",
     description="Empty template repository for ML projects",
     author="Benjamin Bolte",
-    url="https://github.com/codekansas/ml-starter",
+    url="https://github.com/codekansas/ml-starter-empty",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.10",
