@@ -143,7 +143,7 @@ def run_adhoc_test() -> None:
     """Runs adhoc tests for this task.
 
     Usage:
-        python -m ml.tasks.rl_demo
+        python -m project.tasks.rl_demo
     """
 
     ml.configure_logging(use_tqdm=True)
