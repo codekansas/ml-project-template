@@ -4,16 +4,22 @@ This is a starter template for machine learning projects in PyTorch.
 
 ## Run a command
 
-Train a model (using the `image` template repository):
+Train a ResNet18 model on CIFAR10:
 
 ```bash
 runml train configs/image_demo.yaml
 ```
 
+Train an RL PPO model on BipedalWalker:
+
+```bash
+runml train configs/rl_demo.yaml
+```
+
 Launch a Slurm job (requires setting the `SLURM_PARTITION` environment variable):
 
 ```bash
-runml mp_train configs/image_demo.yaml trainer.name=slurm
+runml mp_train configs/image_demo.yaml trainer.name=slurm_sl
 ```
 
 ## Architecture

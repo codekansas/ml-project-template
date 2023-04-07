@@ -1,5 +1,5 @@
 model:
-  name: simple_a2c
+  name: a2c
   state_dims: 24
   hidden_dims: 32
   num_layers: 2

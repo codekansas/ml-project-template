@@ -67,7 +67,7 @@ class FeedForwardNet(nn.Module):
         return x
 
 
-@ml.register_model("simple_a2c", SimpleA2CModelConfig)
+@ml.register_model("a2c", SimpleA2CModelConfig)
 class SimpleA2CModel(ml.BaseModel[SimpleA2CModelConfig]):
     fixed_std: Tensor | None
 
