@@ -33,10 +33,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('requirements.txt') }}-${{ hashFiles('requirements-dev.txt') }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py', 'requirements.txt', 'requirements-dev.txt') }}
 
       - name: Install package
-        run: pip install --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
+        run: |
+          pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
 
       - name: Run static checks
         run: |
