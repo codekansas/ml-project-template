@@ -59,4 +59,16 @@
   "python.analysis.exclude": ["setup.py"],
   "ruff.fixAll": false,
   "ruff.organizeImports": true,
+
+  /* Hides some caching directories. */
+  "files.exclude": {
+    "**/.cache": true,
+    "build": true,
+    "dist": true,
+    "out": true,
+    "**/.ruff_cache": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.git": true,
+  },
 }
