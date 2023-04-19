@@ -9,7 +9,7 @@ from torch import Tensor
 
 
 @dataclass
-class BWAction:
+class Action:
     """Defines the action space for the BipedalWalker task."""
 
     hip_1: float | Tensor
@@ -22,7 +22,7 @@ class BWAction:
     returns: float | Tensor | None = None
 
     @classmethod
-    def from_policy(cls, policy: Tensor, log_prob: Tensor, value: Tensor) -> "BWAction":
+    def from_policy(cls, policy: Tensor, log_prob: Tensor, value: Tensor) -> "Action":
         assert policy.shape == (4,) and log_prob.shape == (4,) and value.shape == (1,)
         log_prob_list = log_prob.detach().cpu().tolist()
         return cls(policy[0].item(), policy[1].item(), policy[2].item(), policy[3].item(), log_prob_list, value.item())
@@ -34,7 +34,7 @@ class BWAction:
 
 
 @dataclass
-class BWState:
+class State:
     """Defines the state space for the BipedalWalker task."""
 
     observation: Tensor
@@ -45,7 +45,7 @@ class BWState:
     reset: bool | Tensor
 
 
-class BipedalWalkerEnvironment(ml.Environment[BWState, BWAction]):
+class Environment(ml.Environment[State, Action]):
     def __init__(self, hardcore: bool = False) -> None:
         super().__init__()
 
@@ -59,8 +59,8 @@ class BipedalWalkerEnvironment(ml.Environment[BWState, BWAction]):
         truncated: bool = False,
         info: dict | None = None,
         reset: bool = False,
-    ) -> BWState:
-        return BWState(
+    ) -> State:
+        return State(
             observation=torch.from_numpy(observation),
             reward=reward,
             terminated=truncated,
@@ -69,16 +69,16 @@ class BipedalWalkerEnvironment(ml.Environment[BWState, BWAction]):
             reset=reset,
         )
 
-    def reset(self, seed: int | None = None) -> BWState:
+    def reset(self, seed: int | None = None) -> State:
         init_observation, init_info = self.env.reset(seed=seed)
         return self._state_from_observation(init_observation, info=init_info, reset=True)
 
-    def render(self, state: BWState) -> np.ndarray | Tensor:
+    def render(self, state: State) -> np.ndarray | Tensor:
         return cast(np.ndarray, self.env.render())
 
-    def sample_action(self) -> BWAction:
+    def sample_action(self) -> Action:
         env_sample = self.env.action_space.sample().tolist()
-        return BWAction(
+        return Action(
             hip_1=env_sample[0],
             knee_1=env_sample[1],
             hip_2=env_sample[2],
@@ -86,10 +86,10 @@ class BipedalWalkerEnvironment(ml.Environment[BWState, BWAction]):
             log_prob=[0.0] * 4,
         )
 
-    def step(self, action: BWAction) -> BWState:
+    def step(self, action: Action) -> State:
         action_arr = np.array([action.hip_1, action.knee_1, action.hip_2, action.knee_2])
         observation_arr, reward, terminated, truncated, info = self.env.step(action_arr)
         return self._state_from_observation(observation_arr, float(reward), terminated, truncated, info)
 
-    def terminated(self, state: BWState) -> bool:
+    def terminated(self, state: State) -> bool:
         return cast(bool, state.terminated or state.truncated)
