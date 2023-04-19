@@ -10,7 +10,7 @@ from torch.distributions.normal import Normal
 from torch.nn import functional as F
 
 from project.models.a2c import A2CModel
-from project.tasks.rl_demo_env import Action, BipedalWalkerEnvironment, State
+from project.tasks.rl_demo_env import Action, Environment, State
 
 
 @dataclass
@@ -51,8 +51,8 @@ class RLDemoTask(
         log_prob, action = p_dist.log_prob(action).cpu(), action.cpu()
         return [Action.from_policy(c, p, v) for c, p, v in zip(action.unbind(0), log_prob.unbind(0), value.unbind(0))]
 
-    def get_environment(self) -> BipedalWalkerEnvironment:
-        return BipedalWalkerEnvironment(hardcore=self.config.hardcore)
+    def get_environment(self) -> Environment:
+        return Environment(hardcore=self.config.hardcore)
 
     def postprocess_trajectory(self, samples: list[tuple[State, Action]]) -> list[tuple[State, Action]]:
         def discount_cumsum(x: np.ndarray, discount: float) -> np.ndarray:

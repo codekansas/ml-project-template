@@ -45,7 +45,7 @@ class State:
     reset: bool | Tensor
 
 
-class BipedalWalkerEnvironment(ml.Environment[State, Action]):
+class Environment(ml.Environment[State, Action]):
     def __init__(self, hardcore: bool = False) -> None:
         super().__init__()
 
