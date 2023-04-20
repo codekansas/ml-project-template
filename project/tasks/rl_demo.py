@@ -100,13 +100,7 @@ class RLDemoTask(
         p_dist = model.forward_policy_net(obs)
         return value, p_dist
 
-    def compute_loss(
-        self,
-        model: A2CModel,
-        batch: tuple[State, Action],
-        state: ml.State,
-        output: Output,
-    ) -> Loss:
+    def compute_loss(self, model: A2CModel, batch: tuple[State, Action], state: ml.State, output: Output) -> Loss:
         _, actions = batch
         value, p_dist = output
 
