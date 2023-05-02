@@ -17,8 +17,11 @@ lr_scheduler:
   name: linear
 
 trainer:
-  name: vanilla_sl
+  name: sl
 
 logger:
   - name: stdout
   - name: tensorboard
+
+launcher:
+  name: ddp
