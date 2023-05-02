@@ -18,6 +18,7 @@ lr_scheduler:
 
 trainer:
   name: sl
+  batches_per_step: 4
 
 logger:
   - name: stdout
