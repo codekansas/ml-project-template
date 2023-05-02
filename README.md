@@ -21,7 +21,7 @@ runml train configs/rl_demo.yaml
 Launch a Slurm job (requires setting the `SLURM_PARTITION` environment variable):
 
 ```bash
-runml mp_train configs/image_demo.yaml trainer.name=slurm_sl
+runml launch configs/image_demo.yaml launcher.name=slurm launcher.num_nodes=1 launcher.gpus_per_node=1
 ```
 
 ## Architecture
