@@ -17,8 +17,12 @@ lr_scheduler:
   name: linear
 
 trainer:
-  name: ddp_sl
+  name: sl
+  batches_per_step: 4
 
 logger:
   - name: stdout
   - name: tensorboard
+
+launcher:
+  name: ddp

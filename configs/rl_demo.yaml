@@ -27,7 +27,7 @@ lr_scheduler:
   decay: false
 
 trainer:
-  name: vanilla_rl
+  name: rl
   sampling:
     num_epoch_samples: 7_500
     max_trajectory_length: 200
@@ -38,3 +38,6 @@ trainer:
 logger:
   - name: stdout
   - name: tensorboard
+
+launcher:
+  name: ddp
