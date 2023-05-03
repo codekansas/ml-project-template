@@ -38,21 +38,9 @@ disable_error_code = ["attr-defined"]
 [[tool.mypy.overrides]]
 
 module = [
-    "_pytest.*",
-    "cv2.*",
-    "faiss.*",
-    "ffmpeg.*",
-    "liblzfse.*",
-    "matplotlib.*",
-    "open3d.*",
-    "pandas.*",
-    "PIL.*",
-    "pytest.*",
-    "quaternion.*",
+    # "ml.*",
     "scipy.*",
-    "seaborn.*",
     "torchvision.*",
-    "tqdm.*",
 ]
 
 ignore_missing_imports = true
