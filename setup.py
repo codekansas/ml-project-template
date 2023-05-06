@@ -226,7 +226,7 @@ with open("requirements-dev.txt", "r", encoding="utf-8") as f:
     requirements_dev: list[str] = f.read().splitlines()
 
 
-with open(PROJECT_NAME / "__init__.py", "r", encoding="utf-8") as fh:
+with open(f"{PROJECT_NAME}/__init__.py", "r", encoding="utf-8") as fh:
     version_re = re.search(r"^__version__ = \"([^\"]*)\"", fh.read(), re.MULTILINE)
 assert version_re is not None, f"Could not find version in {PROJECT_NAME}/__init__.py"
 version: str = version_re.group(1)
