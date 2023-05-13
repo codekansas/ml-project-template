@@ -1,3 +1,5 @@
+"""This defines a wrapper for the BipedalWalker-v3 environment."""
+
 from dataclasses import dataclass
 from typing import cast
 

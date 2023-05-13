@@ -1,3 +1,14 @@
+"""Defines a simple supervised learning template task.
+
+This task is meant to be used as a template for creating new tasks. Just
+change the key from ``template`` to whatever you want to name your task, and
+implement the following methods:
+
+- :meth:`run_model`
+- :meth:`compute_loss`
+- :meth:`get_dataset`
+"""
+
 from dataclasses import dataclass
 
 import ml.api as ml

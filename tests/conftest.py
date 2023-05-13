@@ -1,3 +1,5 @@
+"""Defines PyTest configuration for the project."""
+
 import functools
 import random
 

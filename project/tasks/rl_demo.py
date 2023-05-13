@@ -1,3 +1,13 @@
+"""This defines a simple reinforcement learning task.
+
+This will collect samples from the environment and train an A2C model on them,
+using the PPO algorithm. You can run it as follows:
+
+.. code-block:: bash
+
+    runml train configs/rl_demo.yaml
+"""
+
 from dataclasses import dataclass
 from typing import cast
 
@@ -40,7 +50,7 @@ class RLDemoTask(
         Loss,
     ],
 ):
-    def __init__(self, config: RLDemoTaskConfig):
+    def __init__(self, config: RLDemoTaskConfig) -> None:
         super().__init__(config)
 
     def get_actions(self, model: A2CModel, states: list[State], optimal: bool) -> list[Action]:
@@ -139,7 +149,6 @@ def run_adhoc_test() -> None:
     Usage:
         python -m project.tasks.rl_demo
     """
-
     ml.configure_logging(use_tqdm=True)
     config = RLDemoTaskConfig()
     task = RLDemoTask(config)
