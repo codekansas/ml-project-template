@@ -1,3 +1,16 @@
+"""Defines a simple example supervised learning task.
+
+This task trains a simple ResNet model to perform classification on the
+CIFAR-10 dataset. It demonstrates the gist of building a supervised learning
+task in the framework, including logging validation samples. To run it, run:
+
+.. code-block:: bash
+
+    runml train configs/image_demo.yaml
+
+This will run it on whatever device is available on your machine.
+"""
+
 from dataclasses import dataclass
 
 import ml.api as ml

@@ -69,6 +69,8 @@
     "**/.ruff_cache": true,
     "**/.pytest_cache": true,
     "**/.mypy_cache": true,
-    "**/.git": true,
+    "**/.git": true
   },
+
+  "cmake.sourceDirectory": "${workspaceFolder}/project/cpp"
 }

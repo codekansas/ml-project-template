@@ -1,3 +1,10 @@
+"""Defines a template mode.
+
+To use this, change the key from ``"template"`` to whatever your project
+is called. Next, just override the ``forward`` model to whatever signature
+your task expects, and you're good to go!
+"""
+
 from dataclasses import dataclass
 
 import ml.api as ml

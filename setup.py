@@ -2,6 +2,7 @@
 # pylint: disable=import-outside-toplevel
 # pylint: disable=import-error
 # mypy: ignore-errors
+"""Setup script for the project."""
 
 import os
 import re

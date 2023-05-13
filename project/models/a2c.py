@@ -1,3 +1,12 @@
+"""Defines a simple actor-critic model.
+
+This model consists of two parts - a policy network and a value network. The
+policy network outputs a distribution over actions, and the value network
+outputs a scalar value. The policy network is trained to maximize the value
+function, and the value network is trained to minimize the value function
+error.
+"""
+
 from dataclasses import dataclass
 
 import ml.api as ml

@@ -40,4 +40,4 @@ logger:
   - name: tensorboard
 
 launcher:
-  name: ddp
+  name: mp

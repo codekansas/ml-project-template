@@ -1,3 +1,25 @@
+"""Defines a ResNet model.
+
+This model is a wrapper around the ResNet model provided by PyTorch. It
+supports all of the standard ResNet sizes (18, 34, 50, 101, 152) and
+optionally adds a new output head with a different number of classes.
+
+This can be used in your module as follows:
+
+.. code-block:: yaml
+
+    model:
+        name: resnet18  # Or related key
+
+Possible model keys are:
+
+- ``resnet18``
+- ``resnet34``
+- ``resnet50``
+- ``resnet101``
+- ``resnet152``
+"""
+
 from dataclasses import dataclass
 from typing import Callable
 

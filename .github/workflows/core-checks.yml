@@ -29,15 +29,33 @@ jobs:
         with:
           python-version: "3.10"
 
-      - name: Cache requirements
-        uses: actions/cache@v2
+      - name: Restore cache
+        id: restore-cache
+        uses: actions/cache/restore@v3
         with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-${{ hashFiles('setup.py', 'requirements.txt', 'requirements-dev.txt') }}
+          path: |
+            ${{ env.pythonLocation }}
+            .mypy_cache/
+            build/
+            dist/
+            ml_project.egg-info/
+          key: python-requirements-${{ env.pythonLocation }}-${{ github.event.pull_request.base.sha || github.sha }}
+          restore-keys: |
+            python-requirements-${{ env.pythonLocation }}
+            python-requirements-
 
       - name: Install package
         run: |
-          pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
+          # pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
+          pip install \
+            --upgrade \
+            --upgrade-strategy eager \
+            --extra-index-url https://download.pytorch.org/whl/cpu \
+            wheel \
+            -r requirements.txt \
+            -r requirements-dev.txt
+          python setup.py bdist_wheel
+          pip install dist/*.whl
 
       - name: Run static checks
         run: |
@@ -45,4 +63,16 @@ jobs:
           make static-checks
 
       - name: Run unit tests
-        run: make test
+        run: |
+          make test
+
+      - name: Save cache
+        uses: actions/cache/save@v3
+        with:
+          path: |
+            ${{ env.pythonLocation }}
+            .mypy_cache/
+            build/
+            dist/
+            ml_project.egg-info/
+          key: ${{ steps.restore-cache.outputs.cache-primary-key }}
