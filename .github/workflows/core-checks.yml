@@ -47,7 +47,13 @@ jobs:
       - name: Install package
         run: |
           # pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
-          pip install wheel
+          pip install \
+            --upgrade \
+            --upgrade-strategy eager \
+            --extra-index-url https://download.pytorch.org/whl/cpu \
+            wheel \
+            -r requirements.txt \
+            -r requirements-dev.txt
           python setup.py bdist_wheel
           pip install dist/*.whl
 
