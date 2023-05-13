@@ -36,6 +36,9 @@ jobs:
           path: |
             ${{ env.pythonLocation }}
             .mypy_cache/
+            build/
+            dist/
+            ml_project.egg-info/
           key: python-requirements-${{ env.pythonLocation }}-${{ github.event.pull_request.base.sha || github.sha }}
           restore-keys: |
             python-requirements-${{ env.pythonLocation }}
@@ -43,7 +46,9 @@ jobs:
 
       - name: Install package
         run: |
-          pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
+          # pip install --upgrade --upgrade-strategy eager --extra-index-url https://download.pytorch.org/whl/cpu -e '.[dev]'
+          python setup.py bdist_wheel
+          pip install dist/*.whl
 
       - name: Run static checks
         run: |
@@ -60,4 +65,7 @@ jobs:
           path: |
             ${{ env.pythonLocation }}
             .mypy_cache/
+            build/
+            dist/
+            ml_project.egg-info/
           key: ${{ steps.restore-cache.outputs.cache-primary-key }}
