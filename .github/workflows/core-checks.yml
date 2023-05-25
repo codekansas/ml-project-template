@@ -49,7 +49,7 @@ jobs:
         run: |
           ./initialize \
             --name 'my_project' \
-            --project-type ${{ matrix.project_type }} \
+            --project ${{ matrix.project_type }} \
             --remove-init 1
 
       - name: Install package
