@@ -11,6 +11,8 @@ from typing import Callable, Literal, cast, get_args
 # Regex matching valid Python module names.
 NAME_REGEX = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 
+PROJECT_FILES = ("setup.py", "requirements.txt", "requirements-dev.txt", "README.md")
+
 ProjectType = Literal["vanilla", "cpp"]
 
 
@@ -30,6 +32,14 @@ def is_valid_name(name: str) -> bool:
     if NAME_REGEX.match(name) is None:
         show_warning(f"'{name}' is not a valid project name")
         return False
+    return True
+
+
+def is_valid_description(description: str) -> bool:
+    return True
+
+
+def is_valid_author(author: str) -> bool:
     return True
 
 
@@ -70,16 +80,17 @@ def rename_setup_py(project_type: ProjectType, dry_run: bool) -> None:
     root_dir = Path(__file__).parent.resolve()
 
     # Moves files to the correct location.
-    for file_name in ("setup.py", "requirements.txt", "requirements-dev.txt"):
+    for file_name in PROJECT_FILES:
         from_name = root_dir / "project_files" / project_type / file_name
         to_name = root_dir / file_name
-        if to_name.exists():
+        if not dry_run and to_name.exists():
             to_name.unlink()
         if from_name.exists():
             if dry_run:
                 show_dry_run(f"Renaming {file_name}")
                 # Creates a temporary symlink.
-                to_name.symlink_to(from_name)
+                if not to_name.exists():
+                    to_name.symlink_to(from_name)
             else:
                 from_name.rename(to_name)
         else:
@@ -149,7 +160,7 @@ def update_project_name(from_str: str, to_str: str, file_path: Path, dry_run: bo
         show_warning(f"Can't find {file_path}")
 
 
-def rename_project(new_name: str, dry_run: bool) -> None:
+def rename_project(new_name: str, new_description: str, new_author: str, dry_run: bool) -> None:
     # Renames project root directory.
     root_dir = Path(__file__).parent.resolve()
     if (project_root := root_dir / "project").exists():
@@ -177,6 +188,11 @@ def rename_project(new_name: str, dry_run: bool) -> None:
         dry_run,
     )
 
+    # Replaces {name} and {description} in `README.md`.
+    readme_md = root_dir / "README.md"
+    update_project_name("<name>", new_name, readme_md, dry_run)
+    update_project_name("<description>", new_description, readme_md, dry_run)
+
 
 def remove_init(remove: bool, dry_run: bool) -> None:
     if not remove:
@@ -189,25 +205,29 @@ def remove_init(remove: bool, dry_run: bool) -> None:
         init_path.unlink()
 
 
-def remove_setup_symlink(dry_run: bool) -> None:
+def remove_dryrun_symlinks(dry_run: bool) -> None:
     if not dry_run:
         return
 
-    setup_py_file = Path(__file__).parent.resolve() / "setup.py"
-    if setup_py_file.is_symlink():
-        show_dry_run(f"Removing temporary symlink to {setup_py_file}")
-        setup_py_file.unlink()
+    for file_name in PROJECT_FILES:
+        setup_py_file = Path(__file__).parent.resolve() / file_name
+        if setup_py_file.is_symlink():
+            show_dry_run(f"Removing temporary symlink to {file_name}")
+            setup_py_file.unlink()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Initializes a new project")
     parser.add_argument("-n", "--name", type=str, default=None, help="Project name")
+    parser.add_argument("-c", "--description", type=str, default=None, help="Project description")
+    parser.add_argument("-a", "--author", type=str, default=None, help="Author name")
     parser.add_argument("-p", "--project", type=str, choices=get_args(ProjectType), default=None, help="Project type")
     parser.add_argument("-r", "--remove-init", type=int, default=None, choices=[0, 1], help="Remove initialize script")
     parser.add_argument("-d", "--dry-run", default=False, action="store_true", help="Dry run")
     args = parser.parse_args()
 
     name = cast(str | None, args.name)
+    description = cast(str | None, args.description)
     proj_type = cast(ProjectType | None, None if args.project is None else args.project)
     rm_init = cast(bool | None, None if args.remove_init is None else bool(args.remove_init))
     dry_run = cast(bool, args.dry_run)
@@ -217,9 +237,14 @@ def main() -> None:
         sys.exit(1)
 
     rename_setup_py(read_project_type() if proj_type is None else proj_type, dry_run)
-    rename_project(read_input("project name", "New ", ":", is_valid_name) if name is None else name, dry_run)
+    rename_project(
+        read_input("project name", "New ", ":", is_valid_name) if name is None else name,
+        read_input("project description", "New ", ":", is_valid_description) if description is None else description,
+        read_input("author name", "New ", ":", is_valid_author) if args.author is None else args.author,
+        dry_run,
+    )
     remove_init(read_yes_no("initialize script", "Remove ") if rm_init is None else rm_init, dry_run)
-    remove_setup_symlink(dry_run)
+    remove_dryrun_symlinks(dry_run)
     show_success("Done!")
 
 
