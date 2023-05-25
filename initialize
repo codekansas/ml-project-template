@@ -181,7 +181,7 @@ def rename_project(
         # Updates project imports.
         for py_file in project_root.glob("**/*.py"):
             update_project_name("import project", f"import {new_name}", py_file, dry_run)
-            update_project_name("from project import", f"from {new_name} import", py_file, dry_run)
+            update_project_name("from project", f"from {new_name}", py_file, dry_run)
 
     else:
         show_warning(f"Can't find project root in {project_root}")
