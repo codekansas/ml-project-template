@@ -194,8 +194,8 @@ def rename_project(
 
     # Parses remote URL from git config.
     try:
-        new_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"]).decode().strip()
-        new_url = new_url.replace("git@github.com:", "https://github.com/")
+        new_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], cwd=root_dir).decode()
+        new_url = new_url.strip().replace("git@github.com:", "https://github.com/", cwd=root_dir)
 
     except subprocess.CalledProcessError:
         new_url = ""
@@ -235,7 +235,7 @@ def remove_init(remove: bool, dry_run: bool) -> None:
 
 
 def commit_changes(dry_run: bool) -> None:
-    if not dry_run:
+    if dry_run:
         return
 
     wd = Path(__file__).parent.resolve()
