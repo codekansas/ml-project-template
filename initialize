@@ -177,7 +177,7 @@ def rename_project(
             show_dry_run(f"Renaming project root to '{new_name}'")
         else:
             if (new_project_root := root_dir / new_name).exists():
-                new_project_root.rmdir()
+                shutil.rmtree(new_project_root)
             project_root.rename(new_project_root)
 
         # Updates project imports.
