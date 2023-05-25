@@ -98,7 +98,7 @@ def rename_setup_py(project_type: ProjectType, dry_run: bool) -> None:
             else:
                 from_name.rename(to_name)
         else:
-            show_warning(f"Can't find {from_name}")
+            show_warning(f"Can't find {file_name}")
 
     # Removes the project files directory.
     project_files_dir = root_dir / "project_files"
@@ -176,7 +176,9 @@ def rename_project(
         if dry_run:
             show_dry_run(f"Renaming project root to '{new_name}'")
         else:
-            project_root.rename(root_dir / new_name)
+            if (new_project_root := root_dir / new_name).exists():
+                new_project_root.rmdir()
+            project_root.rename(new_project_root)
 
         # Updates project imports.
         for py_file in project_root.glob("**/*.py"):
