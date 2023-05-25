@@ -238,8 +238,9 @@ def commit_changes(dry_run: bool) -> None:
     if not dry_run:
         return
 
-    subprocess.run(["git", "add", "."])
-    subprocess.run(["git", "commit", "-m", "Initialize project"])
+    wd = Path(__file__).parent.resolve()
+    subprocess.run(["git", "add", "."], cwd=wd)
+    subprocess.run(["git", "commit", "-m", "Initialize project"], cwd=wd)
 
 
 def remove_dryrun_symlinks(dry_run: bool) -> None:
