@@ -80,7 +80,7 @@ def read_project_type() -> ProjectType:
     return cast(ProjectType, project_type)
 
 
-def rename_setup_py(project_type: ProjectType, dry_run: bool) -> None:
+def rename_project_files(project_type: ProjectType, dry_run: bool) -> None:
     root_dir = Path(__file__).parent.resolve()
 
     # Moves files to the correct location.
@@ -265,7 +265,7 @@ def main() -> None:
         show_warning(f"Invalid project name: {name}", bold=True)
         sys.exit(1)
 
-    rename_setup_py(read_project_type() if proj_type is None else proj_type, dry_run)
+    rename_project_files(read_project_type() if proj_type is None else proj_type, dry_run)
     rename_project(
         read_input("project name", "New ", ":", is_valid_name) if name is None else name,
         read_input("project description", "New ", ":", is_valid_description) if description is None else description,
