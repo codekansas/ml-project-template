@@ -85,7 +85,7 @@ def rename_project_files(project_type: ProjectType, dry_run: bool) -> None:
 
     # Moves files to the correct location.
     for file_name in PROJECT_FILES:
-        from_name = root_dir / "project_files" / project_type / file_name
+        from_name = (root_dir / "project_files" / project_type / file_name).resolve()
         to_name = root_dir / file_name
         if not dry_run and to_name.exists():
             to_name.unlink()
