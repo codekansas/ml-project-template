@@ -6,10 +6,12 @@ import re
 import shutil
 import sys
 from pathlib import Path
-from typing import Callable, cast
+from typing import Callable, Literal, cast, get_args
 
 # Regex matching valid Python module names.
 NAME_REGEX = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
+
+ProjectType = Literal["vanilla", "cpp"]
 
 
 def show_success(msg: str) -> None:
@@ -52,6 +54,16 @@ def read_input(
 
 def read_yes_no(prompt: str, pre: str | None = None) -> bool:
     return read_input(prompt, pre, "? [y/n]", lambda s: s.lower() in ("y", "n")).lower() == "y"
+
+
+def read_project_type() -> ProjectType:
+    project_type = read_input(
+        "create",
+        "What type of project do you want to ",
+        "?\n" + "\n".join(f"- {t}" for t in get_args(ProjectType)) + "\n>",
+        lambda s: s in get_args(ProjectType),
+    )
+    return cast(ProjectType, project_type)
 
 
 def rename_setup_py(use_cpp: bool, dry_run: bool) -> None:
@@ -191,48 +203,22 @@ def remove_setup_symlink(dry_run: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Initializes a new project")
-    parser.add_argument(
-        "-n",
-        "--name",
-        type=str,
-        default=None,
-        help="Project name",
-    )
-    parser.add_argument(
-        "-c",
-        "--use-cpp-backend",
-        type=str,
-        choices=["true", "false"],
-        default=None,
-        help="Use C++ backend",
-    )
-    parser.add_argument(
-        "-r",
-        "--remove-init",
-        type=str,
-        choices=["true", "false"],
-        default=None,
-        help="Remove initialize script",
-    )
-    parser.add_argument(
-        "-d",
-        "--dry-run",
-        default=False,
-        action="store_true",
-        help="Dry run",
-    )
+    parser.add_argument("-n", "--name", type=str, default=None, help="Project name")
+    parser.add_argument("-p", "--project", type=str, choices=get_args(ProjectType), default=None, help="Project type")
+    parser.add_argument("-r", "--remove-init", type=int, default=None, choices=[0, 1], help="Remove initialize script")
+    parser.add_argument("-d", "--dry-run", default=False, action="store_true", help="Dry run")
     args = parser.parse_args()
 
     name = cast(str | None, args.name)
-    use_cpp = cast(bool | None, None if args.use_cpp_backend is None else args.use_cpp_backend.lower() == "true")
-    rm_init = cast(bool | None, None if args.remove_init is None else args.remove_init.lower() == "true")
+    proj_type = cast(ProjectType | None, None if args.project is None else args.project)
+    rm_init = cast(bool | None, None if args.remove_init is None else bool(args.remove_init))
     dry_run = cast(bool, args.dry_run)
 
     if name is not None and not is_valid_name(name):
         show_warning(f"Invalid project name: {name}", bold=True)
         sys.exit(1)
 
-    rename_setup_py(read_yes_no("C++ backend", "Requires ") if use_cpp is None else use_cpp, dry_run)
+    rename_setup_py(read_project_type() if proj_type is None else proj_type, dry_run)
     rename_project(read_input("project name", "New ", ":", is_valid_name) if name is None else name, dry_run)
     remove_init(read_yes_no("initialize script", "Remove ") if rm_init is None else rm_init, dry_run)
     remove_setup_symlink(dry_run)
