@@ -4,6 +4,7 @@
 import argparse
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from typing import Callable, Literal, cast, get_args
@@ -160,7 +161,12 @@ def update_project_name(from_str: str, to_str: str, file_path: Path, dry_run: bo
         show_warning(f"Can't find {file_path}")
 
 
-def rename_project(new_name: str, new_description: str, new_author: str, dry_run: bool) -> None:
+def rename_project(
+    new_name: str,
+    new_description: str,
+    new_author: str,
+    dry_run: bool,
+) -> None:
     # Renames project root directory.
     root_dir = Path(__file__).parent.resolve()
     if (project_root := root_dir / "project").exists():
@@ -175,9 +181,21 @@ def rename_project(new_name: str, new_description: str, new_author: str, dry_run
     setup_cfg = root_dir / "setup.cfg"
     update_project_name("project.scripts.cli", f"{new_name}.scripts.cli", setup_cfg, dry_run)
 
+    # Parses remote URL from git config.
+    try:
+        new_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"]).decode().strip()
+        new_url.replace("git@github.com:", "https://github.com/")
+
+    except subprocess.CalledProcessError:
+        new_url = ""
+
     # Replaces PROJECT_NAME = "project" with PROJECT_NAME = "{new_name}" in `setup.py`.
     setup_py = root_dir / "setup.py"
     update_project_name('PROJECT_NAME = "project"', f'PROJECT_NAME = "{new_name}"', setup_py, dry_run)
+    update_project_name("<name>", new_name, setup_py, dry_run)
+    update_project_name("<description>", new_description, setup_py, dry_run)
+    update_project_name("<author>", new_author, setup_py, dry_run)
+    update_project_name("<url>", new_url, setup_py, dry_run)
 
     # Replaces known-first-party = ["project", "tests"] in `pyproject.toml``.
     pyproject_toml = root_dir / "pyproject.toml"

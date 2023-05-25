@@ -49,6 +49,8 @@ jobs:
         run: |
           ./initialize \
             --name 'my_project' \
+            --description 'My project description' \
+            --author 'My Name' \
             --project ${{ matrix.project_type }} \
             --remove-init 1
 

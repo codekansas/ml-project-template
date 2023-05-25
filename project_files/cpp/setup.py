@@ -16,8 +16,6 @@ from pathlib import Path
 from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
 
-PROJECT_NAME = "project"
-
 PLAT_TO_CMAKE = {
     "win32": "Win32",
     "win-amd64": "x64",
@@ -227,18 +225,18 @@ with open("requirements-dev.txt", "r", encoding="utf-8") as f:
     requirements_dev: list[str] = f.read().splitlines()
 
 
-with open(f"{PROJECT_NAME}/__init__.py", "r", encoding="utf-8") as fh:
+with open("<name>/__init__.py", "r", encoding="utf-8") as fh:
     version_re = re.search(r"^__version__ = \"([^\"]*)\"", fh.read(), re.MULTILINE)
-assert version_re is not None, f"Could not find version in {PROJECT_NAME}/__init__.py"
+assert version_re is not None, "Could not find version in <name>/__init__.py"
 version: str = version_re.group(1)
 
 
 setup(
-    name="ml-project",
+    name="<name>",
     version=version,
-    description="Template repository for ML projects",
-    author="Benjamin Bolte",
-    url="https://github.com/codekansas/ml-project-template",
+    description="<description>",
+    author="<author>",
+    url="<url>",
     long_description=long_description,
     long_description_content_type="text/markdown",
     python_requires=">=3.10",
@@ -246,10 +244,10 @@ setup(
     install_requires=requirements,
     tests_require=requirements_dev,
     extras_require={"dev": requirements_dev},
-    ext_modules=[CMakeExtension(PROJECT_NAME + "/cpp")],
+    ext_modules=[CMakeExtension("<name>/cpp")],
     cmdclass={"build_ext": CMakeBuild},
     exclude_package_data={
-        PROJECT_NAME: [
+        "<name>": [
             "cpp/**/*.cpp",
         ],
     },
