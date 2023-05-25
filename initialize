@@ -234,6 +234,14 @@ def remove_init(remove: bool, dry_run: bool) -> None:
         init_path.unlink()
 
 
+def commit_changes(dry_run: bool) -> None:
+    if not dry_run:
+        return
+
+    subprocess.run(["git", "add", "."])
+    subprocess.run(["git", "commit", "-m", "Initialize project"])
+
+
 def remove_dryrun_symlinks(dry_run: bool) -> None:
     if not dry_run:
         return
@@ -273,6 +281,7 @@ def main() -> None:
         dry_run,
     )
     remove_init(read_yes_no("initialize script", "Remove ") if rm_init is None else rm_init, dry_run)
+    commit_changes(dry_run)
     remove_dryrun_symlinks(dry_run)
     show_success("Done!")
 
