@@ -3,6 +3,7 @@
 
 import argparse
 import re
+import shutil
 import sys
 from pathlib import Path
 from typing import Callable, cast
@@ -110,7 +111,7 @@ def rename_setup_py(use_cpp: bool, dry_run: bool) -> None:
             if dry_run:
                 show_dry_run("Removing C++ subdirectory")
             else:
-                cpp_dir.rmdir()
+                shutil.rmtree(cpp_dir)
         else:
             show_warning("Can't find C++ subdirectory")
 
@@ -190,13 +191,50 @@ def remove_setup_symlink(dry_run: bool) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Initializes a new project")
-    parser.add_argument("-d", "--dry-run", default=False, action="store_true")
+    parser.add_argument(
+        "-n",
+        "--name",
+        type=str,
+        default=None,
+        help="Project name",
+    )
+    parser.add_argument(
+        "-c",
+        "--use-cpp-backend",
+        type=str,
+        choices=["true", "false"],
+        default=None,
+        help="Use C++ backend",
+    )
+    parser.add_argument(
+        "-r",
+        "--remove-init",
+        type=str,
+        choices=["true", "false"],
+        default=None,
+        help="Remove initialize script",
+    )
+    parser.add_argument(
+        "-d",
+        "--dry-run",
+        default=False,
+        action="store_true",
+        help="Dry run",
+    )
     args = parser.parse_args()
 
+    name = cast(str | None, args.name)
+    use_cpp = cast(bool | None, None if args.use_cpp_backend is None else args.use_cpp_backend.lower() == "true")
+    rm_init = cast(bool | None, None if args.remove_init is None else args.remove_init.lower() == "true")
     dry_run = cast(bool, args.dry_run)
-    rename_setup_py(read_yes_no("C++ backend", "Requires "), dry_run)
-    rename_project(read_input("project name", "New ", ":", is_valid_name), dry_run)
-    remove_init(read_yes_no("initialize script", "Remove "), dry_run)
+
+    if name is not None and not is_valid_name(name):
+        show_warning(f"Invalid project name: {name}", bold=True)
+        sys.exit(1)
+
+    rename_setup_py(read_yes_no("C++ backend", "Requires ") if use_cpp is None else use_cpp, dry_run)
+    rename_project(read_input("project name", "New ", ":", is_valid_name) if name is None else name, dry_run)
+    remove_init(read_yes_no("initialize script", "Remove ") if rm_init is None else rm_init, dry_run)
     remove_setup_symlink(dry_run)
     show_success("Done!")
 
