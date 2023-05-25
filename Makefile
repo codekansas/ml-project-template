@@ -52,7 +52,7 @@ clean:
 #       Static Checks      #
 # ------------------------ #
 
-py-files := $$(git ls-files '*.py')
+py-files := $(shell find . -name '*.py')
 
 format:
 	black $(py-files)
@@ -60,8 +60,8 @@ format:
 .PHONY: format
 
 format-cpp:
-	clang-format -i $$(git ls-files '*.cpp' '*.h')
-	cmake-format -i $$(git ls-files 'CMakeLists.txt' '*.cmake')
+	clang-format -i $(shell find . -name '*.cpp' -o -name '*.h')
+	cmake-format -i $(shell find . -name 'CMakeLists.txt' -o -name '*.cmake')
 .PHONY: format-cpp
 
 static-checks:

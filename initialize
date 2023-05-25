@@ -66,36 +66,34 @@ def read_project_type() -> ProjectType:
     return cast(ProjectType, project_type)
 
 
-def rename_setup_py(use_cpp: bool, dry_run: bool) -> None:
-    # Renames the right setup.py file.
-    setup_py_name = "setup_cpp.py" if use_cpp else "setup_no_cpp.py"
+def rename_setup_py(project_type: ProjectType, dry_run: bool) -> None:
     root_dir = Path(__file__).parent.resolve()
-    new_setup_py = root_dir / setup_py_name
 
-    setup_py = root_dir / "setup.py"
-    if setup_py.exists():
-        setup_py.unlink()
-
-    if new_setup_py.exists():
-        if dry_run:
-            show_dry_run(f"Renaming {setup_py_name} to setup.py")
-            # Creates a temporary symlink.
-            setup_py.symlink_to(new_setup_py)
+    # Moves files to the correct location.
+    for file_name in ("setup.py", "requirements.txt", "requirements-dev.txt"):
+        from_name = root_dir / "project_files" / project_type / file_name
+        to_name = root_dir / file_name
+        if to_name.exists():
+            to_name.unlink()
+        if from_name.exists():
+            if dry_run:
+                show_dry_run(f"Renaming {file_name}")
+                # Creates a temporary symlink.
+                to_name.symlink_to(from_name)
+            else:
+                from_name.rename(to_name)
         else:
-            new_setup_py.rename(setup_py)
-    else:
-        show_warning(f"Can't find {setup_py_name}")
+            show_warning(f"Can't find {from_name}")
 
-    # Removes the other setup.py file.
-    other_setup_py_name = "setup_no_cpp.py" if use_cpp else "setup_cpp.py"
-    other_setup_py = root_dir / other_setup_py_name
-    if other_setup_py.exists():
+    # Removes the project files directory.
+    project_files_dir = root_dir / "project_files"
+    if project_files_dir.exists():
         if dry_run:
-            show_dry_run(f"Removing {other_setup_py_name}")
+            show_dry_run("Removing project_files directory")
         else:
-            other_setup_py.unlink()
+            shutil.rmtree(project_files_dir)
     else:
-        show_warning(f"Can't find {other_setup_py_name}")
+        show_warning("Can't find project_files directory")
 
     # Removes .github/workflows/core-checks.yml and replaces with .github/workflows/core-checks.yml.project
     core_checks = root_dir / ".github" / "workflows" / "core-checks.yml"
@@ -116,8 +114,8 @@ def rename_setup_py(use_cpp: bool, dry_run: bool) -> None:
     else:
         show_warning("Can't find core-checks.yml.project")
 
-    # Removes `project/cpp` subdirectory and `tests/test_cpp_extension.py` if `use_cpp` is False.
-    if not use_cpp:
+    # Removes `project/cpp` subdirectory and `tests/test_cpp_extension.py` if project_type != "cpp".
+    if project_type != "cpp":
         cpp_dir = root_dir / "project" / "cpp"
         if cpp_dir.exists():
             if dry_run:
