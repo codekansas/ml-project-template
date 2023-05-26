@@ -1,4 +1,18 @@
+<div align="center">
+
 # ML Project Template
+
+Welcome! To get started, clone this repository and run the `initialize` script:
+
+</div>
+
+```bash
+./initialize
+```
+
+<br />
+
+## About
 
 This is a starter template for machine learning projects in PyTorch.
 

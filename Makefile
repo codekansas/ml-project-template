@@ -52,26 +52,26 @@ clean:
 #       Static Checks      #
 # ------------------------ #
 
-py-files := $$(git ls-files '*.py')
+py-files := $(shell find . -name '*.py')
 
 format:
-	black $(py-files)
-	ruff --fix $(py-files)
+	@black $(py-files)
+	@ruff --fix $(py-files)
 .PHONY: format
 
 format-cpp:
-	clang-format -i $$(git ls-files '*.cpp' '*.h')
-	cmake-format -i $$(git ls-files 'CMakeLists.txt' '*.cmake')
+	@clang-format -i $(shell find . -name '*.cpp' -o -name '*.h')
+	@cmake-format -i $(shell find . -name 'CMakeLists.txt' -o -name '*.cmake')
 .PHONY: format-cpp
 
 static-checks:
-	black --diff --check $(py-files)
-	ruff $(py-files)
-	mypy --install-types --non-interactive $(py-files)
+	@black --diff --check $(py-files)
+	@ruff $(py-files)
+	@mypy --install-types --non-interactive $(py-files)
 .PHONY: lint
 
 mypy-daemon:
-	dmypy run -- $(py-files)
+	@dmypy run -- $(py-files)
 .PHONY: mypy-daemon
 
 # ------------------------ #
