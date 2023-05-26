@@ -2,6 +2,7 @@
 """Runs the project initialization."""
 
 import argparse
+import itertools
 import re
 import shutil
 import subprocess
@@ -181,7 +182,8 @@ def rename_project(
             project_root.rename(new_project_root)
 
         # Updates project imports.
-        for py_file in new_project_root.glob("**/*.py"):
+        test_root = root_dir / "tests"
+        for py_file in itertools.chain(new_project_root.glob("**/*.py"), test_root.glob("**/*.py")):
             update_project_name("import project", f"import {new_name}", py_file, dry_run)
             update_project_name("from project", f"from {new_name}", py_file, dry_run)
 
@@ -195,7 +197,8 @@ def rename_project(
     # Parses remote URL from git config.
     try:
         new_url = subprocess.check_output(["git", "config", "--get", "remote.origin.url"], cwd=root_dir).decode()
-        new_url = new_url.strip().replace("git@github.com:", "https://github.com/")
+        if (github_repo_match := re.match(r"^git@github.com:(.+).git$", new_url.strip())) is not None:
+            new_url = f"https://github.com/{github_repo_match.group(1)}"
 
     except subprocess.CalledProcessError:
         new_url = ""
@@ -267,7 +270,7 @@ def main() -> None:
     name = cast(str | None, args.name)
     description = cast(str | None, args.description)
     proj_type = cast(ProjectType | None, None if args.project is None else args.project)
-    rm_init = cast(bool | None, None if args.remove_init is None else bool(args.remove_init))
+    rm_init = None if args.remove_init is None else bool(args.remove_init)
     dry_run = cast(bool, args.dry_run)
 
     if name is not None and not is_valid_name(name):
