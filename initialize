@@ -203,9 +203,8 @@ def rename_project(
     except subprocess.CalledProcessError:
         new_url = ""
 
-    # Replaces PROJECT_NAME = "project" with PROJECT_NAME = "{new_name}" in `setup.py`.
+    # Replaces keywords in `setup.py`.
     setup_py = root_dir / "setup.py"
-    update_project_name('PROJECT_NAME = "project"', f'PROJECT_NAME = "{new_name}"', setup_py, dry_run)
     update_project_name("<name>", new_name, setup_py, dry_run)
     update_project_name("<description>", new_description, setup_py, dry_run)
     update_project_name("<author>", new_author, setup_py, dry_run)
