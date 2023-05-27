@@ -3,11 +3,9 @@ model:
 
 task:
   name: template
-  finished:
-    max_steps: 100_000
-  dataloader:
-    train:
-      batch_size: 16
+  max_steps: 100_000
+  train_dl:
+    batch_size: 16
 
 optimizer:
   name: adam

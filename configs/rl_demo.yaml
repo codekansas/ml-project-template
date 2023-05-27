@@ -8,11 +8,9 @@ model:
 
 task:
   name: rl_demo
-  finished:
-    max_steps: 1_000_000
-  dataloader:
-    train:
-      batch_size: 256
+  max_steps: 1_000_000
+  train_dl:
+    batch_size: 256
   dataset:
     num_update_steps: 500
   environment:
