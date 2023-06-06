@@ -1,9 +1,9 @@
+# mypy: disable-error-code="import"
 """This defines a wrapper for the BipedalWalker-v3 environment."""
 
 from dataclasses import dataclass
 from typing import cast
 
-import gymnasium as gym
 import ml.api as ml
 import numpy as np
 import torch
@@ -50,6 +50,11 @@ class State:
 class Environment(ml.Environment[State, Action]):
     def __init__(self, hardcore: bool = False) -> None:
         super().__init__()
+
+        try:
+            import gymnasium as gym
+        except ImportError as e:
+            raise ImportError("First install gymnasium: pip install 'gymnasium[box2d]'") from e
 
         self.env = gym.make("BipedalWalker-v3", hardcore=hardcore, render_mode="rgb_array")
 
