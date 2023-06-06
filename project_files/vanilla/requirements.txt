@@ -1,6 +1,5 @@
 # requirements.txt
 
-gymnasium[box2d]
 ml-starter
 ml-pretrained
 numpy
