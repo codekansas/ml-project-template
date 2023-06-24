@@ -30,8 +30,7 @@ trainer:
     num_epoch_samples: 7_500
     max_trajectory_length: 200
     # force_sync: True
-  grad_clipping:
-    clip_grad_norm: 2.0
+  clip_grad_norm: 2.0
 
 logger:
   - name: stdout
