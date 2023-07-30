@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # pylint: disable=import-outside-toplevel
 # pylint: disable=import-error
-# mypy: ignore-errors
+# mypy: disable-error-code="import"
 """Setup script for the project."""
 
 import os
