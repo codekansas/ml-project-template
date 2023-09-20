@@ -1,9 +1,6 @@
 {
   "recommendations": [
-    "xaver.clang-format",
-    "cheshirekow.cmake-format",
     "ms-python.python",
-    "esbenp.prettier-vscode",
     "charliermarsh.ruff"
   ]
 }
