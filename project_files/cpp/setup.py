@@ -239,7 +239,7 @@ setup(
     url="<url>",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    python_requires=">=3.10",
+    python_requires=">=3.11",
     setup_requires=["cmake", "mypy", "pybind11", "torch"],
     install_requires=requirements,
     tests_require=requirements_dev,

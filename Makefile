@@ -6,7 +6,7 @@ define HELP_MESSAGE
 
 # Installing
 
-1. Create a new Conda environment: `conda create --name ml-project python=3.10`
+1. Create a new Conda environment: `conda create --name ml-project python=3.11`
 2. Activate the environment: `conda activate ml-project`
 3. Install the package: `make install-dev`
 4. Rebuild C++ extensions: `make build-ext`
