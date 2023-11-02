@@ -154,7 +154,7 @@ def rename_project_files(project_type: ProjectType, dry_run: bool) -> None:
 def update_project_name(from_str: str, to_str: str, file_path: Path, dry_run: bool) -> None:
     if file_path.exists():
         if dry_run:
-            show_dry_run(f"Updating project name in {file_path}", grey=True)
+            show_dry_run(f"Updating {from_str} to {to_str} in {file_path}", grey=True)
         else:
             with open(file_path, "r", encoding="utf-8") as f:
                 file_content = f.read()
@@ -176,16 +176,27 @@ def rename_project(
     if (project_root := root_dir / "project").exists():
         if dry_run:
             show_dry_run(f"Renaming project root to '{new_name}'")
+
+            # Moves `requirements*.txt` to `<name>/requirements*.txt`.
+            for file_name in ("requirements.txt", "requirements-dev.txt"):
+                if (requirements_txt := root_dir / file_name).exists():
+                    show_dry_run(f"Moving {file_name} to {new_name}/{file_name}")
+
         else:
             if (new_project_root := root_dir / new_name).exists():
                 shutil.rmtree(new_project_root)
             project_root.rename(new_project_root)
 
-        # Updates project imports.
-        test_root = root_dir / "tests"
-        for py_file in itertools.chain(new_project_root.glob("**/*.py"), test_root.glob("**/*.py")):
-            update_project_name("import project", f"import {new_name}", py_file, dry_run)
-            update_project_name("from project", f"from {new_name}", py_file, dry_run)
+            # Updates project imports.
+            test_root = root_dir / "tests"
+            for py_file in itertools.chain(new_project_root.glob("**/*.py"), test_root.glob("**/*.py")):
+                update_project_name("import project", f"import {new_name}", py_file, dry_run)
+                update_project_name("from project", f"from {new_name}", py_file, dry_run)
+
+            # Moves `requirements*.txt` to `<name>/requirements*.txt`.
+            for file_name in ("requirements.txt", "requirements-dev.txt"):
+                if (requirements_txt := root_dir / file_name).exists():
+                    shutil.move(requirements_txt, new_project_root / file_name)
 
     else:
         show_warning(f"Can't find project root in {project_root}")
@@ -224,14 +235,6 @@ def rename_project(
     readme_md = root_dir / "README.md"
     update_project_name("<name>", new_name, readme_md, dry_run)
     update_project_name("<description>", new_description, readme_md, dry_run)
-
-    # Moves `requirements*.txt` to `<name>/requirements*.txt`.
-    for file_name in ("requirements.txt", "requirements-dev.txt"):
-        if (requirements_txt := root_dir / file_name).exists():
-            if dry_run:
-                show_dry_run(f"Moving {file_name} to {new_name}/{file_name}")
-            else:
-                shutil.move(requirements_txt, new_project_root / file_name)
 
 
 def remove_init(remove: bool, dry_run: bool) -> None:
