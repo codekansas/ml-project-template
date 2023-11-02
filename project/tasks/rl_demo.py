@@ -134,7 +134,7 @@ class RLDemoTask(
         # Logs additional metrics.
         self.logger.log_scalar("p_dist_std", lambda: p_dist.stddev.mean().item())
         if state.num_epoch_steps == 0 and state.num_epochs % self.config.sample_clip_interval == 0:
-            self.logger.log_video("sample", self.sample_clip(model=model, use_tqdm=False))
+            self.logger.log_video("sample", self.sample_clip(model=model))
 
         return {
             "policy": policy_loss,
