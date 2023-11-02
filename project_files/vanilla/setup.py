@@ -9,11 +9,11 @@ with open("README.md", "r", encoding="utf-8") as f:
     long_description: str = f.read()
 
 
-with open("requirements.txt", "r", encoding="utf-8") as f:
+with open("<name>/requirements.txt", "r", encoding="utf-8") as f:
     requirements: list[str] = f.read().splitlines()
 
 
-with open("requirements-dev.txt", "r", encoding="utf-8") as f:
+with open("<name>/requirements-dev.txt", "r", encoding="utf-8") as f:
     requirements_dev: list[str] = f.read().splitlines()
 
 

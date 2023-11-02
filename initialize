@@ -225,6 +225,14 @@ def rename_project(
     update_project_name("<name>", new_name, readme_md, dry_run)
     update_project_name("<description>", new_description, readme_md, dry_run)
 
+    # Moves `requirements*.txt` to `<name>/requirements*.txt`.
+    for file_name in ("requirements.txt", "requirements-dev.txt"):
+        if (requirements_txt := root_dir / file_name).exists():
+            if dry_run:
+                show_dry_run(f"Moving {file_name} to {new_name}/{file_name}")
+            else:
+                shutil.move(requirements_txt, new_project_root / file_name)
+
 
 def remove_init(remove: bool, dry_run: bool) -> None:
     if not remove:
